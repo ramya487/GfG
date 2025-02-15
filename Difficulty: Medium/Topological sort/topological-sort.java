@@ -55,32 +55,36 @@ class Main {
 
 
 class Solution {
-    public static void dfs(int node, ArrayList<ArrayList<Integer>> adj, int[] vis, Stack<Integer> st){
-        if (vis[node] == 1) return;
-        vis[node] = 1;
-        for (int neigh: adj.get(node)){
-            if (vis[neigh] == 0){
-                dfs(neigh, adj, vis, st);
-            }
-        }
-        st.add(node);
-    }
     // Function to return list containing vertices in Topological order.
     static ArrayList<Integer> topologicalSort(ArrayList<ArrayList<Integer>> adj) {
         int n = adj.size();
-        int[] vis = new int[n];
-        Stack<Integer> st = new Stack<>();
-        ArrayList<Integer> ret = new ArrayList<>();
+        int[] indeg = new int[n];
         
         for (int i = 0; i<n; i++){
-            if (vis[i] == 0){
-                dfs(i, adj, vis, st);
+            for (int neigh: adj.get(i)){
+                indeg[neigh]++;
             }
         }
         
-        while (!st.isEmpty()){
-            ret.add(st.pop());
+        Queue<Integer> q = new LinkedList<>();
+        for (int i = 0; i<n; i++){
+            if (indeg[i] == 0){
+                q.offer(i);
+            }
         }
-        return ret;
+        
+        ArrayList<Integer> topo = new ArrayList<>();
+        while (!q.isEmpty()){
+            int frnt = q.poll();
+            topo.add(frnt);
+            for (int neigh: adj.get(frnt)){
+                indeg[neigh]--;
+                if (indeg[neigh] == 0){
+                    q.offer(neigh);
+                }
+            }
+        }
+        
+        return topo;
     }
 }
