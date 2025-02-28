@@ -39,6 +39,10 @@ class GFG {
 
 // } Driver Code Ends
 
+// T- O(e+v)
+// S- O(2v)
+
+
 class Pair {
     int node;
     int dist;
