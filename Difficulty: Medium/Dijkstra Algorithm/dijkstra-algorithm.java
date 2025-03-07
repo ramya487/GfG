@@ -65,12 +65,11 @@ class iPair {
 }
 */
 
-class Pair {
-    int dist;
-    int node;
-    Pair(int dist, int node){
-        this.dist = dist;
-        this.node = node;
+class Pair{
+    int n,d;
+    Pair(int n, int d){
+        this.d = d;
+        this.n = n;
     }
 }
 
@@ -79,40 +78,30 @@ class Solution {
     // Function to find the shortest distance of all the vertices
     // from the source vertex src.
     ArrayList<Integer> dijkstra(ArrayList<ArrayList<iPair>> adj, int src) {
-        int n = adj.size();
-        
-        PriorityQueue<Pair> pq = new PriorityQueue<>((x,y) -> x.dist != y.dist ? x.dist - y.dist : x.node - y.node);
-        pq.offer(new Pair(0,src));
-        
-        int[] dist = new int[n];
+        int siz = adj.size();
+        int[] dist = new int[siz];
         Arrays.fill(dist, (int)(1e9));
-        
+        PriorityQueue<Pair> pq = new PriorityQueue<>((x,y) -> x.d != y.d ? x.d - y.d : x.n - y.n);
+        pq.offer(new Pair(src,0));
         dist[src] = 0;
-        
         while (!pq.isEmpty()){
             Pair frnt = pq.poll();
-            int d = frnt.dist;
-            int node = frnt.node;
-            
-            ArrayList<iPair> neigh = adj.get(node);
-            int meml = neigh.size();
-            
-            for (int i = 0; i<meml; i++){
-                iPair pair = neigh.get(i);
-                int ngh = pair.first;
-                int ddist = pair.second;
-                
-                int ndist = d+ddist;
-                if (ndist<dist[ngh]){
-                    dist[ngh] = ndist;
-                    pq.offer(new Pair(ndist, ngh));
+            int n = frnt.n;
+            int d = frnt.d;
+            for (iPair neigh: adj.get(n)){
+                int dis = neigh.second;
+                int node = neigh.first;
+                if (dis+d < dist[node]){
+                    dist[node] = dis+d;
+                    pq.offer(new Pair(node, dis+d));
                 }
             }
         }
         ArrayList<Integer> ret = new ArrayList<>();
-        for (int it: dist){
-            ret.add(it);
+        for (int itr: dist){
+            ret.add(itr);
         }
         return ret;
+        
     }
 }
