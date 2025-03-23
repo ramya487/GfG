@@ -44,10 +44,9 @@ System.out.println("~");
 
 
 // User function Template for Java
-
-class Tuple {
-    int i,j,dist;
-    Tuple(int i, int j, int dist){
+class Pair {
+    int i, j, dist;
+    Pair(int i, int j, int dist){
         this.i = i;
         this.j = j;
         this.dist = dist;
@@ -56,12 +55,13 @@ class Tuple {
 class Solution {
 
     int shortestPath(int[][] grid, int[] source, int[] destination) {
-        Queue<Tuple> pq = new LinkedList<>();
-        pq.offer(new Tuple(source[0], source[1], 0));
-        int m = grid.length; // no of rows
-        int n = grid[0].length; // no of cols
+
+        Queue<Pair> q = new LinkedList<>();
+        int m = grid.length;
+        int n = grid[0].length;
         int[][] dist = new int[m][n];
-        for (int i = 0; i<m; i++){
+        q.offer(new Pair(source[0], source[1], 0));
+        for (int i = 0; i<m ;i++){
             for (int j = 0; j<n; j++){
                 dist[i][j] = (int)(1e9);
             }
@@ -69,23 +69,25 @@ class Solution {
         dist[source[0]][source[1]] = 0;
         int[] delrow = {-1,0,1,0};
         int[] delcol = {0,1,0,-1};
-        while (!pq.isEmpty()){
-            Tuple frnt = pq.poll();
-            int row = frnt.i;
-            int col = frnt.j;
+        while (!q.isEmpty()){
+            Pair frnt = q.poll();
+            int r = frnt.i;
+            int c = frnt.j;
             int d = frnt.dist;
-            for (int i = 0; i<4; i++){
-                int nrow = delrow[i]+row;
-                int ncol = delcol[i]+col;
+            for (int counter = 0; counter<4; counter++){
+                int nrow = delrow[counter]+r;
+                int ncol = delcol[counter]+c;
                 int ndist = d+1;
-                if (nrow>=0 && ncol>=0 && nrow<m && ncol<n && grid[nrow][ncol] == 1 && dist[nrow][ncol]>ndist){
-                    if (nrow == destination[0] && ncol == destination[1]) return ndist;
+                if (nrow>=0 && ncol >=0 && nrow<m && ncol<n && grid[nrow][ncol] == 1 && dist[nrow][ncol]>ndist){
+                    q.offer(new Pair(nrow, ncol, ndist));
                     dist[nrow][ncol] = ndist;
-                    pq.offer(new Tuple(nrow, ncol, ndist));
+                    if (nrow == destination[0] && ncol == destination[1]){
+                        return dist[nrow][ncol];
+                    }
                 }
             }
         }
-        int distval = dist[destination[0]][destination[1]];
-        return (distval == (int)(1e9)) ? -1 : distval;
+        int distance = dist[destination[0]][destination[1]];
+        return (distance == (int)(1e9)) ? -1 : distance;
     }
 }
